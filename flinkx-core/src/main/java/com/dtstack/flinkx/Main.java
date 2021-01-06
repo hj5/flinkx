@@ -119,6 +119,7 @@ public class Main {
         SpeedConfig speedConfig = config.getJob().getSetting().getSpeed();
 
         env.setParallelism(speedConfig.getChannel());
+        //hj:这里写死了，configRestartStrategy为啥还要配置？
         env.setRestartStrategy(RestartStrategies.noRestart());
 
         BaseDataReader dataReader = DataReaderFactory.getDataReader(config, env);
