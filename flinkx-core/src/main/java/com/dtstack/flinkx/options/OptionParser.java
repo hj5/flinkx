@@ -52,7 +52,7 @@ public class OptionParser {
     public OptionParser(String[] args) throws Exception {
         initOptions(addOptions(args));
     }
-
+    /** 封装命令行参数到对象CommandLine */
     private CommandLine addOptions(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, ParseException {
         Class cla = properties.getClass();
         Field[] fields = cla.getDeclaredFields();
@@ -66,7 +66,7 @@ public class OptionParser {
         CommandLine cl = parser.parse(options, args);
         return cl;
     }
-
+    /** 通过CommandLine对象，封装finkx自有命令行参数对象类Options */
     private void initOptions(CommandLine cl) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, ParseException {
         Class cla = properties.getClass();
         Field[] fields = cla.getDeclaredFields();

@@ -69,7 +69,7 @@ public class Launcher {
     public static void main(String[] args) throws Exception {
         OptionParser optionParser = new OptionParser(args);
         Options launcherOptions = optionParser.getOptions();
-        findDefaultConfigDir(launcherOptions);
+        findDefaultConfigDir(launcherOptions);//填充默认值
 
         List<String> argList = optionParser.getProgramExeArgList();
 
@@ -78,7 +78,7 @@ public class Launcher {
         for (int i = 0; i < argList.size(); i += 2) {
             temp.put(argList.get(i), argList.get(i + 1));
         }
-        // 对json中的值进行修改
+        // 对json中的值进行修改：替换job json里的${}变量参数
         HashMap<String, String> parameter = JsonModifyUtil.CommandTransform(temp.get("-p"));
         temp.put("-job", JsonModifyUtil.JsonValueReplace(temp.get("-job"), parameter));
 

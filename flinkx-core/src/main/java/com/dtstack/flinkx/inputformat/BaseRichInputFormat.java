@@ -211,7 +211,7 @@ public abstract class BaseRichInputFormat extends org.apache.flink.api.common.io
     protected boolean makeTaskFailedWhenReportFailed(){
         return false;
     }
-
+    /** 初始化监控线程：从flink rest api中获取读/写流量、时长统计指标 */
     private void initAccumulatorCollector(){
         String lastWriteLocation = String.format("%s_%s", Metrics.LAST_WRITE_LOCATION_PREFIX, indexOfSubTask);
         String lastWriteNum = String.format("%s_%s", Metrics.LAST_WRITE_NUM__PREFIX, indexOfSubTask);
@@ -241,14 +241,14 @@ public abstract class BaseRichInputFormat extends org.apache.flink.api.common.io
             indexOfSubTask = Integer.parseInt(vars.get(Metrics.SUBTASK_INDEX));
         }
     }
-
+    /** 初始化全局流量控制线程：使用flink counter + rateLimiter */
     private void openByteRateLimiter(){
         if (this.bytes > 0) {
             this.byteRateLimiter = new ByteRateLimiter(accumulatorCollector, this.bytes);
             this.byteRateLimiter.start();
         }
     }
-
+    /** 从flink context中获取读/写数量、流量、时长统计累加器，同时将其添加到metric监控中 */
     private void initStatisticsAccumulator(){
         numReadCounter = getRuntimeContext().getLongCounter(Metrics.NUM_READS);
         bytesReadCounter = getRuntimeContext().getLongCounter(Metrics.READ_BYTES);
@@ -291,7 +291,7 @@ public abstract class BaseRichInputFormat extends org.apache.flink.api.common.io
                 bytesReadCounter.add(internalRow.toString().length());
             }
         }
-
+        //hj:不太对吧？
         if (testConfig.errorTest() && testConfig.getFailedPerRecord() > 0) {
             numReadeForTest++;
             if (numReadeForTest > testConfig.getFailedPerRecord()) {
@@ -324,7 +324,7 @@ public abstract class BaseRichInputFormat extends org.apache.flink.api.common.io
     }
 
     /**
-     * 由子类实现，读取一条数据
+     * 由子类实现，读取一条数据后，对Row进行加工处理，如db数据类型转为java数据类型，快照全局位置等
      *
      * @param row 需要创建和填充的数据
      * @return 读取的数据

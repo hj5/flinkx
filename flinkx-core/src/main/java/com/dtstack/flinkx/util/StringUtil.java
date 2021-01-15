@@ -76,7 +76,7 @@ public class StringUtil {
 
         return str;
     }
-
+    /** 字段值由字符串转为真正的java数据类型 */
     public static Object string2col(String str, String type, SimpleDateFormat customTimeFormat) {
         if(str == null || str.length() == 0 || type == null){
             return str;

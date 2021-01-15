@@ -112,14 +112,14 @@ public class Main {
         StreamExecutionEnvironment env = (StringUtils.isNotBlank(monitor)) ?
                 StreamExecutionEnvironment.getExecutionEnvironment() :
                 new MyLocalStreamEnvironment(flinkConf);
-
+        //配置checkpoint:
         env = openCheckpointConf(env, confProperties);
         configRestartStrategy(env, config);
 
         SpeedConfig speedConfig = config.getJob().getSetting().getSpeed();
 
         env.setParallelism(speedConfig.getChannel());
-        //hj:这里写死了，configRestartStrategy为啥还要配置？
+        //hj:这里写死了，configRestartStrategy为啥还要配置？难道是和exactly once有关？
         env.setRestartStrategy(RestartStrategies.noRestart());
 
         BaseDataReader dataReader = DataReaderFactory.getDataReader(config, env);
@@ -151,7 +151,7 @@ public class Main {
             ResultPrintUtil.printResult(result);
         }
     }
-
+    /** 配置重启策略 */
     private static void configRestartStrategy(StreamExecutionEnvironment env, DataTransferConfig config){
         if (needRestart(config)) {
             RestartConfig restartConfig = findRestartConfig(config);
@@ -196,7 +196,7 @@ public class Main {
     private static boolean needRestart(DataTransferConfig config){
         return config.getJob().getSetting().getRestoreConfig().isStream();
     }
-
+    /** 测试配置封装：如果测试的reader性能，则设置Writer为控制台打印Writer  */
     private static void speedTest(DataTransferConfig config) {
         TestConfig testConfig = config.getJob().getSetting().getTestConfig();
         if (READER.equalsIgnoreCase(testConfig.getSpeedTest())) {
@@ -211,7 +211,7 @@ public class Main {
 
         config.getJob().getSetting().getSpeed().setBytes(-1);
     }
-
+    /** 向分布式缓存添加jar  */
     private static void addEnvClassPath(StreamExecutionEnvironment env, Set<URL> classPathSet) throws Exception{
         int i = 0;
         for(URL url : classPathSet){
@@ -233,12 +233,12 @@ public class Main {
         confStr = URLDecoder.decode(confStr, Charsets.UTF_8.toString());
         return objectMapper.readValue(confStr, Properties.class);
     }
-
+    /** 配置checkpoint：间隔时间、超时时间、恰好一次快照语义、job取消时保留checkpoint数据 */
     private static StreamExecutionEnvironment openCheckpointConf(StreamExecutionEnvironment env, Properties properties){
         if(properties!=null){
             String interval = properties.getProperty(ConfigConstant.FLINK_CHECKPOINT_INTERVAL_KEY);
             if(StringUtils.isNotBlank(interval)){
-                env.enableCheckpointing(Long.parseLong(interval.trim()));
+                env.enableCheckpointing(Long.parseLong(interval.trim()));//开启checkpoint
                 LOG.info("Open checkpoint with interval:" + interval);
             }
             String checkpointTimeoutStr = properties.getProperty(ConfigConstant.FLINK_CHECKPOINT_TIMEOUT_KEY);

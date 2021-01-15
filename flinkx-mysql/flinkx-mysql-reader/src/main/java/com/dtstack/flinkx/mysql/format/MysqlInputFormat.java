@@ -57,7 +57,7 @@ public class MysqlInputFormat extends JdbcInputFormat {
         }
         row = new Row(columnCount);
 
-        try {
+        try {//mysql数据的db类型转java数据类型策略：对year、tinyint、bit类型及其他类型进行String转换后，统一由父类进行String到java数据类型的转化.
             for (int pos = 0; pos < row.getArity(); pos++) {
                 Object obj = resultSet.getObject(pos + 1);
                 if(obj != null) {

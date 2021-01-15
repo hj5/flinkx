@@ -211,7 +211,7 @@ public class JdbcInputFormat extends BaseRichInputFormat {
             return true;
         }
     }
-
+    /** 子类负责db数据类型到String的转换，本方法进行String到java数据类型的转化、checkpoint位置更新. */
     @Override
     public Row nextRecordInternal(Row row) throws IOException {
         try {
@@ -219,17 +219,18 @@ public class JdbcInputFormat extends BaseRichInputFormat {
             if (!ConstantValue.STAR_SYMBOL.equals(metaColumns.get(0).getName())) {
                 for (int i = 0; i < columnCount; i++) {
                     Object val = row.getField(i);
+                    //为空设置默认值
                     if (val == null && metaColumns.get(i).getValue() != null) {
                         val = metaColumns.get(i).getValue();
                     }
-
+                    //字段值由字符串转为真正的java数据类型
                     if (val instanceof String) {
                         val = StringUtil.string2col(String.valueOf(val), metaColumns.get(i).getType(), metaColumns.get(i).getTimeFormat());
                         row.setField(i, val);
                     }
                 }
             }
-
+            //更新全局位置最大值：endLocation
             boolean isUpdateLocation = incrementConfig.isPolling() || (incrementConfig.isIncrement() && !incrementConfig.isUseMaxFunc());
             if (isUpdateLocation) {
                 String location = null;
@@ -279,7 +280,7 @@ public class JdbcInputFormat extends BaseRichInputFormat {
     }
 
     /**
-     * 初始化增量或或间隔轮询任务累加器
+     * 初始化增量或间隔轮询任务累加器：startLocation值来自于配置文件，代表上次消费位置，endLocation代表下次消费位置
      *
      * @param inputSplit 数据分片
      */

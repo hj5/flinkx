@@ -49,7 +49,7 @@ import java.util.NoSuchElementException;
 
 /**
  * A {@link SourceFunction} that reads data using an {@link InputFormat}.
- *
+ * InputFormatSourceFunction是一个使用InputFormat来读取数据的SourceFunction，它继承了RichParallelSourceFunction，新增了带有2个参数的构造器，一个是InputFormat，一个是TypeInformation
  * @author jiangbo
  */
 @Internal

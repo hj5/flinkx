@@ -108,7 +108,7 @@ public class DataTransferConfig extends AbstractConfig {
         Preconditions.checkNotNull(writerParameter, "Must specify parameter for the writer");
 
     }
-
+    /** flinkx配置文件json对象封装  */
     public static DataTransferConfig parse(String json) {
         Map<String,Object> map = GsonUtil.GSON.fromJson(json, GsonUtil.gsonMapTypeToken);
         map = MapUtil.convertToHashMap(map);

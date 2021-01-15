@@ -211,7 +211,7 @@ public class AccumulatorCollector {
 
         return valueAccumulator.getLocal().getLocalValue();
     }
-
+    /** 从flink rest api中获取累加器统计指标 */
     @SuppressWarnings("unchecked")
     private void collectAccumulatorWithApi(){
         for (String monitorUrl : monitorUrls) {

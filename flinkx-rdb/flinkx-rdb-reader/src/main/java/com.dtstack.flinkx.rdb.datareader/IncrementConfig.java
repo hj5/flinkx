@@ -20,7 +20,7 @@ package com.dtstack.flinkx.rdb.datareader;
 
 import java.io.Serializable;
 
-/**
+/** 增量任务配置
  * @author jiangbo
  * @explanation
  * @date 2019/3/29

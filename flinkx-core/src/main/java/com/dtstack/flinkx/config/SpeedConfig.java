@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The configuration of speed control
+ * 配置任务并发数及速率限制。The configuration of speed control。
  *
  * Company: www.dtstack.com
  * @author huyifan.zju@163.com

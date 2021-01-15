@@ -31,7 +31,7 @@ import java.math.BigInteger;
 public class BigIntegerMaximum implements SimpleAccumulator<BigInteger> {
 
     private static final long serialVersionUID = 1L;
-
+    /** hj:记录最大值 */
     private BigInteger max = BigInteger.valueOf(Integer.MIN_VALUE);
 
     public BigIntegerMaximum() {}
